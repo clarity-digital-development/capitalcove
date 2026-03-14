@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary — from Capital Cove logo navy */
+  --color-navy: #1B3A5C;
+  --color-navy-light: #244D78;
+  --color-navy-dark: #112842;
+
+  /* Secondary — from Capital Cove logo green */
+  --color-teal: #2BA97B;
+  --color-teal-light: #3CC08E;
+  --color-teal-dark: #1F8A63;
+
+  /* Accent — warm gold CTA */
+  --color-gold: #D4A853;
+  --color-gold-light: #E8C97A;
+  --color-gold-dark: #B8893A;
+
+  /* Neutrals */
+  --color-warm-gray: #F5F3F0;
+  --color-gray-100: #E8E6E3;
+  --color-gray-200: #D1CEC9;
+  --color-gray-600: #6B6560;
+  --color-gray-900: #1A1714;
+
+  /* Semantic */
+  --color-success: #16A34A;
+  --color-error: #DC2626;
+  --color-warning: #F59E0B;
+
+  /* Fonts */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-playfair), Georgia, serif;
+
+  /* Font sizes */
+  --text-hero: clamp(2.5rem, 5vw, 4rem);
+  --text-hero--line-height: 1.1;
+  --text-hero--letter-spacing: -0.02em;
+
+  --text-section: clamp(1.75rem, 3vw, 2.5rem);
+  --text-section--line-height: 1.2;
+  --text-section--letter-spacing: -0.01em;
+
+  --text-card: 1.25rem;
+  --text-card--line-height: 1.4;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.7;
+
+  /* Spacing */
+  --spacing-section: 5rem;
+  --spacing-section-sm: 3rem;
+
+  /* Border radius */
+  --radius-card: 0.75rem;
+  --radius-button: 0.5rem;
+  --radius-input: 0.5rem;
+
+  /* Box shadows */
+  --shadow-card: 0 1px 3px rgba(27, 43, 75, 0.08), 0 4px 12px rgba(27, 43, 75, 0.04);
+  --shadow-card-hover: 0 4px 12px rgba(27, 43, 75, 0.12), 0 8px 24px rgba(27, 43, 75, 0.06);
+  --shadow-nav: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--color-gray-900);
+  background-color: white;
+}
