@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Calculator } from 'lucide-react';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { CTABanner } from '@/components/home/CTABanner';
@@ -74,10 +75,17 @@ export default function ResourcesPage() {
                 href={`/resources/${post.slug}`}
                 className="bg-white rounded-card overflow-hidden shadow-card hover:shadow-card-hover transition-shadow group"
               >
-                {/* Placeholder image */}
-                <div className="aspect-[16/9] bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-600 text-sm">Featured Image</span>
-                </div>
+                {post.image && (
+                  <div className="relative aspect-[16/9] overflow-hidden">
+                    <Image
+                      src={post.image}
+                      alt={post.imageAlt}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                )}
                 <div className="p-6">
                   <div className="flex items-center gap-3 mb-3">
                     <span className="text-xs font-semibold text-teal bg-teal/10 px-2 py-1 rounded-full">

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { SITE_CONFIG, LOAN_PROGRAMS } from '@/lib/constants';
-import { getAllBlogSlugs } from '@/lib/blog';
+import { getAllBlogPosts } from '@/lib/blog';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SITE_CONFIG.url;
@@ -76,11 +76,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const blogRoutes: MetadataRoute.Sitemap = getAllBlogSlugs().map((slug) => ({
-    url: `${baseUrl}/resources/${slug}`,
-    lastModified: now,
+  const blogRoutes: MetadataRoute.Sitemap = getAllBlogPosts().map((post) => ({
+    url: `${baseUrl}/resources/${post.slug}`,
+    lastModified: post.date ? new Date(post.date) : now,
     changeFrequency: 'monthly' as const,
-    priority: 0.5,
+    priority: 0.6,
   }));
 
   return [...staticRoutes, ...loanRoutes, ...blogRoutes];

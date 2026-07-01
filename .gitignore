@@ -39,6 +39,8 @@ yarn-error.log*
 next-env.d.ts
 
 # local QA / dev artifacts (root-level screenshots, playwright captures)
-# NOTE: only ignores root-level PNGs — real assets live under /public
+# NOTE: only ignores root-level images — real assets live under /public
 /*.png
+/*.jpg
+/*.jpeg
 /.playwright-mcp/
