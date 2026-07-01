@@ -1,5 +1,7 @@
+import type { ComparisonRow } from '@/lib/constants';
+
 interface ComparisonChartProps {
-  rows: { feature: string; dalton: string; traditional: string }[];
+  rows: readonly ComparisonRow[];
 }
 
 export function ComparisonChart({ rows }: ComparisonChartProps) {
@@ -12,7 +14,7 @@ export function ComparisonChart({ rows }: ComparisonChartProps) {
               Feature
             </th>
             <th className="px-6 py-4 text-left font-semibold text-sm border-l-2 border-teal">
-              Capital Cove
+              The Capital Cove
             </th>
             <th className="px-6 py-4 text-left font-semibold text-sm">
               Traditional Bank
@@ -29,7 +31,7 @@ export function ComparisonChart({ rows }: ComparisonChartProps) {
                 {row.feature}
               </td>
               <td className="px-6 py-4 font-semibold text-gray-900 text-sm border-l-2 border-teal bg-teal/5">
-                {row.dalton}
+                {row.capitalCove}
               </td>
               <td className="px-6 py-4 text-gray-600 text-sm">
                 {row.traditional}

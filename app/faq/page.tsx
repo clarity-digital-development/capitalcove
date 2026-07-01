@@ -5,9 +5,9 @@ import FAQAccordion from '@/components/shared/FAQAccordion';
 import { CTABanner } from '@/components/home/CTABanner';
 
 export const metadata: Metadata = {
-  title: 'FAQ',
+  title: 'FAQ | The Capital Cove',
   description:
-    'Find answers to frequently asked questions about private lending, loan terms, rates, and the application process at Capital Cove.',
+    'Answers to common questions about private lending, loan terms, rates, and the application process at The Capital Cove.',
 };
 
 function generateFAQJsonLd() {
@@ -52,7 +52,7 @@ export default function FAQPage() {
       </section>
 
       {/* FAQ Content */}
-      <section className="py-section bg-white">
+      <section className="py-(--spacing-section) bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <FAQAccordion categories={FAQ_CATEGORIES} />
         </div>

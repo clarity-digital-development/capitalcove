@@ -1,154 +1,104 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { Hammer, ArrowRightLeft, Home, Building2, User, TrendingUp, Zap } from 'lucide-react';
-import { LOAN_PROGRAMS_FULL } from '@/lib/constants';
+import { LoanHero } from '@/components/loans/LoanHero';
+import { RateTermsTable } from '@/components/loans/RateTermsTable';
+import { EligibilityChecklist } from '@/components/loans/EligibilityChecklist';
+import { LoanProcessSteps } from '@/components/loans/LoanProcessSteps';
+import { ComparisonChart } from '@/components/loans/ComparisonChart';
+import { LoanFAQ } from '@/components/loans/LoanFAQ';
+import { OtherProgramsTeaser } from '@/components/home/OtherProgramsTeaser';
 import { CTABanner } from '@/components/home/CTABanner';
+import {
+  FIX_AND_FLIP_RATE_TERMS,
+  FIX_AND_FLIP_ELIGIBILITY,
+  FIX_AND_FLIP_PROCESS_STEPS,
+  FIX_AND_FLIP_COMPARISON,
+  FIX_AND_FLIP_FAQ,
+  FIX_AND_FLIP_HERO_PILLS,
+} from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'Loan Programs Built for Real Estate Investors | Capital Cove',
+  title: 'Fix and Flip Loans | The Capital Cove',
   description:
-    'Explore our private lending programs: Fix & Flip, Bridge Loans, Rental DSCR, and New Construction. Fast closings, flexible terms, and no income documentation required.',
+    'Fix & flip funding from 9%. Up to 75% ARV, 100% rehab financing, close in 5 days. No experience required. 47 states.',
 };
 
-const iconMap: Record<string, React.ReactNode> = {
-  Hammer: <Hammer className="w-8 h-8 text-teal" />,
-  ArrowRightLeft: <ArrowRightLeft className="w-8 h-8 text-teal" />,
-  Home: <Home className="w-8 h-8 text-teal" />,
-  Building2: <Building2 className="w-8 h-8 text-teal" />,
-};
-
-const experienceSegments = [
-  {
-    icon: <User className="w-8 h-8 text-teal" />,
-    title: 'New Investors',
-    deals: '0–4 deals',
-    description:
-      'Start with our Fix & Flip or Bridge programs. We work with first-time investors who have a solid plan and realistic budget.',
-    recommended: ['Fix & Flip', 'Bridge Loans'],
-  },
-  {
-    icon: <TrendingUp className="w-8 h-8 text-teal" />,
-    title: 'Experienced Investors',
-    deals: '5–20 deals',
-    description:
-      'Scale your portfolio with competitive rates, faster closings, and streamlined underwriting for repeat borrowers.',
-    recommended: ['Rental (DSCR)', 'Bridge Loans'],
-  },
-  {
-    icon: <Zap className="w-8 h-8 text-teal" />,
-    title: 'High-Volume Investors',
-    deals: '20+ deals',
-    description:
-      'Access portfolio-level pricing, dedicated account management, and custom loan structures for your pipeline.',
-    recommended: ['New Construction', 'Rental (DSCR)'],
-  },
-];
-
-export default function LoanProgramsPage() {
+export default function FixAndFlipPage() {
   return (
     <>
-      {/* Hero */}
-      <section className="bg-navy py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="font-display text-hero text-white">
-            Loan Programs Built for Real Estate Investors
-          </h1>
-          <p className="text-body-lg text-white/90 mt-4 max-w-3xl mx-auto">
-            Whether you are flipping your first house or building a rental empire,
-            we have a lending solution designed for your strategy.
-          </p>
+      <LoanHero
+        name="Fix & Flip Loans"
+        tagline="Fast funding for your next flip. Close in as few as 5 days."
+        applyHref="/apply?type=fix-and-flip"
+        applyLabel="Apply for Fix & Flip Funding"
+        pills={FIX_AND_FLIP_HERO_PILLS}
+      />
+
+      {/* Rates & Terms */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-section font-bold text-gray-900 mb-8">
+            Rates & Terms
+          </h2>
+          <RateTermsTable rows={FIX_AND_FLIP_RATE_TERMS} />
         </div>
       </section>
 
-      {/* Program Grid */}
+      {/* Eligibility */}
+      <section className="bg-warm-gray py-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-section font-bold text-gray-900 mb-8 text-center">
+            Eligibility
+          </h2>
+          <EligibilityChecklist
+            whatWeLookFor={[...FIX_AND_FLIP_ELIGIBILITY.whatWeLookFor]}
+            whatWeDontRequire={[...FIX_AND_FLIP_ELIGIBILITY.whatWeDontRequire]}
+          />
+        </div>
+      </section>
+
+      {/* How Fix & Flip Loans Work */}
+      <section className="py-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-section font-bold text-gray-900 mb-12 text-center">
+            How Fix & Flip Loans Work
+          </h2>
+          <LoanProcessSteps steps={FIX_AND_FLIP_PROCESS_STEPS} />
+        </div>
+      </section>
+
+      {/* Comparison */}
+      <section className="bg-warm-gray py-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-section font-bold text-gray-900 mb-8 text-center">
+            The Capital Cove vs. Traditional Banks
+          </h2>
+          <ComparisonChart rows={FIX_AND_FLIP_COMPARISON} />
+        </div>
+      </section>
+
+      {/* FAQ */}
       <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {LOAN_PROGRAMS_FULL.map((program) => (
-              <Link
-                key={program.slug}
-                href={`/loans/${program.slug}`}
-                className="bg-white rounded-card shadow-card hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 p-6 flex flex-col border border-gray-100"
-              >
-                <div className="mb-4">{iconMap[program.icon]}</div>
-                <h3 className="font-semibold text-lg text-gray-900">
-                  {program.name}
-                </h3>
-                <p className="text-sm text-gray-600 mt-2 flex-1">
-                  {program.description}
-                </p>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {program.keyStats.map((stat) => (
-                    <span
-                      key={stat.label}
-                      className="text-xs bg-warm-gray text-gray-700 rounded-full px-3 py-1"
-                    >
-                      {stat.value}
-                    </span>
-                  ))}
-                </div>
-
-                <span className="text-sm font-semibold text-teal mt-4 inline-flex items-center gap-1">
-                  View Program <span aria-hidden="true">&rarr;</span>
-                </span>
-              </Link>
-            ))}
-          </div>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-section font-bold text-gray-900 mb-8 text-center">
+            Fix & Flip FAQ
+          </h2>
+          <LoanFAQ faqs={FIX_AND_FLIP_FAQ} />
         </div>
       </section>
 
-      {/* Experience Segmentation */}
-      <section className="bg-warm-gray py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-section font-bold text-gray-900">
-              Not Sure Which Program Fits?
-            </h2>
-            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-              We work with investors at every stage. Find the right program based
-              on your experience level.
-            </p>
-          </div>
+      {/* Other Programs */}
+      <OtherProgramsTeaser
+        headline="Other Programs We Offer"
+        subheadline="Bridge, rental, and new construction financing available through our lending network."
+        background="white"
+      />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {experienceSegments.map((segment) => (
-              <div
-                key={segment.title}
-                className="bg-white rounded-card shadow-card p-8"
-              >
-                <div className="mb-4">{segment.icon}</div>
-                <h3 className="font-semibold text-lg text-gray-900">
-                  {segment.title}
-                </h3>
-                <p className="text-sm text-teal font-medium mt-1">
-                  {segment.deals}
-                </p>
-                <p className="text-sm text-gray-600 mt-3 leading-relaxed">
-                  {segment.description}
-                </p>
-                <div className="mt-4 pt-4 border-t border-gray-100">
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
-                    Recommended
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {segment.recommended.map((name) => (
-                      <span
-                        key={name}
-                        className="text-xs bg-teal/10 text-teal font-medium rounded-full px-3 py-1"
-                      >
-                        {name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <CTABanner />
+      <CTABanner
+        headline="Ready to Submit Your Flip?"
+        subheadline="Send us the deal — scope of work, purchase price, and ARV. Dalton reviews every application personally."
+        ctaText="Apply for Fix & Flip Funding"
+        ctaHref="/apply?type=fix-and-flip"
+      />
     </>
   );
 }

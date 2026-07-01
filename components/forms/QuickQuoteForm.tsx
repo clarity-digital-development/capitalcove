@@ -4,10 +4,13 @@ import { useState, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AlertTriangle } from 'lucide-react';
 import ProgressBar from './ProgressBar';
 import FormStep from './FormStep';
 import ButtonSelector from './ButtonSelector';
 import FormSuccess from './FormSuccess';
+import { US_STATES, isExcludedState, SMS_CONSENT_COPY, SITE_CONFIG } from '@/lib/constants';
+import { readAttribution } from '@/lib/attribution';
 
 const quickQuoteSchema = z.object({
   loanType: z.string().min(1, 'Please select a loan type'),
@@ -16,7 +19,12 @@ const quickQuoteSchema = z.object({
   purchasePrice: z.number().min(50000, 'Minimum $50,000'),
   loanAmount: z.number().min(50000, 'Minimum $50,000'),
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  phone: z.string().regex(/^(\+1)?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, 'Enter a valid US phone number'),
+  phone: z
+    .string()
+    .regex(
+      /^(\+1)?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+      'Enter a valid US phone number',
+    ),
   email: z.string().email('Enter a valid email address'),
   smsConsent: z.literal(true, { message: 'SMS consent is required' }),
 });
@@ -24,7 +32,7 @@ const quickQuoteSchema = z.object({
 type QuickQuoteData = z.infer<typeof quickQuoteSchema>;
 
 const loanTypeOptions = [
-  { value: 'fix-flip', label: 'Fix & Flip' },
+  { value: 'fix-and-flip', label: 'Fix & Flip' },
   { value: 'bridge', label: 'Bridge' },
   { value: 'rental', label: 'Rental' },
   { value: 'new-construction', label: 'New Construction' },
@@ -32,15 +40,9 @@ const loanTypeOptions = [
 
 const propertyTypeOptions = [
   { value: 'single-family', label: 'Single Family' },
-  { value: 'multi-family', label: 'Multi-Family' },
-  { value: 'commercial', label: 'Commercial' },
-];
-
-const US_STATES = [
-  'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA',
-  'KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ',
-  'NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT',
-  'VA','WA','WV','WI','WY',
+  { value: '2-4-unit', label: '2-4 Unit' },
+  { value: '5-plus-unit', label: '5+ Unit' },
+  { value: 'mixed-use', label: 'Mixed Use' },
 ];
 
 function formatCurrency(val: number): string {
@@ -83,11 +85,33 @@ function CurrencyInput({
   );
 }
 
-export default function QuickQuoteForm() {
+export type QuickQuoteSubmitData = QuickQuoteData;
+
+interface QuickQuoteFormProps {
+  /**
+   * Optional override of the default POST-to-/api/leads behavior.
+   * When provided, the form delegates submission to the parent (e.g. for the
+   * term-sheet preview orchestrator that needs to attach gate confirmations
+   * and an estimate). Should return a promise that resolves on success and
+   * rejects to show the error UI.
+   */
+  onExternalSubmit?: (data: QuickQuoteSubmitData) => Promise<void>;
+  /**
+   * When true, suppresses the built-in success screen — the parent will render
+   * the next phase. The error UI still shows on submission failure.
+   */
+  suppressBuiltInSuccess?: boolean;
+}
+
+export default function QuickQuoteForm({
+  onExternalSubmit,
+  suppressBuiltInSuccess,
+}: QuickQuoteFormProps = {}) {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     control,
@@ -112,6 +136,10 @@ export default function QuickQuoteForm() {
     mode: 'onTouched',
   });
 
+  const propertyState = watch('propertyState');
+  // Hard block: we do not lend in CA/AZ/HI/PR — cannot proceed past this step.
+  const stateBlocked = Boolean(propertyState) && isExcludedState(propertyState);
+
   const goForward = useCallback(() => {
     setDirection('forward');
     setStep((s) => Math.min(s + 1, 4));
@@ -127,7 +155,7 @@ export default function QuickQuoteForm() {
       setValue('loanType', val);
       goForward();
     },
-    [setValue, goForward]
+    [setValue, goForward],
   );
 
   const handleStep2Next = useCallback(async () => {
@@ -143,25 +171,38 @@ export default function QuickQuoteForm() {
   const onSubmit = useCallback(
     async (data: QuickQuoteData) => {
       setIsSubmitting(true);
+      setSubmitError(null);
       try {
+        if (onExternalSubmit) {
+          await onExternalSubmit(data);
+          setSubmitted(true);
+          return;
+        }
         const res = await fetch('/api/leads', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
+          body: JSON.stringify({ ...data, attribution: readAttribution() }),
         });
         if (!res.ok) throw new Error('Submit failed');
         setSubmitted(true);
       } catch {
-        // Could add error handling UI here
+        setSubmitError(
+          `Something went wrong on our end. Please try again, or call ${SITE_CONFIG.phone} and we'll take your deal over the phone.`,
+        );
       } finally {
         setIsSubmitting(false);
       }
     },
-    []
+    [onExternalSubmit],
   );
 
-  if (submitted) {
+  if (submitted && !suppressBuiltInSuccess) {
     return <FormSuccess type="quick-quote" />;
+  }
+
+  if (submitted && suppressBuiltInSuccess) {
+    // Parent renders the next phase (e.g. TermSheetPreview).
+    return null;
   }
 
   return (
@@ -171,7 +212,9 @@ export default function QuickQuoteForm() {
       <FormStep direction={direction} stepKey={step}>
         {step === 1 && (
           <div>
-            <h3 className="text-lg font-semibold text-navy mb-4">What type of loan do you need?</h3>
+            <h3 className="text-lg font-semibold text-navy mb-4">
+              What type of loan do you need?
+            </h3>
             <Controller
               control={control}
               name="loanType"
@@ -189,10 +232,14 @@ export default function QuickQuoteForm() {
 
         {step === 2 && (
           <div>
-            <h3 className="text-lg font-semibold text-navy mb-4">Tell us about the property</h3>
+            <h3 className="text-lg font-semibold text-navy mb-4">
+              Tell us about the property
+            </h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Property State</label>
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Property State
+                </label>
                 <Controller
                   control={control}
                   name="propertyState"
@@ -207,20 +254,32 @@ export default function QuickQuoteForm() {
                     >
                       <option value="">Select a state</option>
                       {US_STATES.map((st) => (
-                        <option key={st} value={st}>
-                          {st}
+                        <option key={st.value} value={st.value}>
+                          {st.label}
                         </option>
                       ))}
                     </select>
                   )}
                 />
                 {errors.propertyState && (
-                  <p className="text-red-500 text-xs mt-1">{errors.propertyState.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.propertyState.message}
+                  </p>
+                )}
+                {stateBlocked && (
+                  <div className="mt-2 rounded-input border border-error/40 bg-error/10 p-3 flex items-start gap-2">
+                    <AlertTriangle className="h-4 w-4 text-error shrink-0 mt-0.5" />
+                    <p className="text-xs text-gray-700">
+                      We do not currently lend in this state.
+                    </p>
+                  </div>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Property Type</label>
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Property Type
+                </label>
                 <Controller
                   control={control}
                   name="propertyType"
@@ -229,12 +288,14 @@ export default function QuickQuoteForm() {
                       options={propertyTypeOptions}
                       value={field.value}
                       onChange={field.onChange}
-                      columns={3}
+                      columns={2}
                     />
                   )}
                 />
                 {errors.propertyType && (
-                  <p className="text-red-500 text-xs mt-1">{errors.propertyType.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.propertyType.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -250,7 +311,8 @@ export default function QuickQuoteForm() {
               <button
                 type="button"
                 onClick={handleStep2Next}
-                className="flex-1 py-3 bg-teal text-white rounded-button text-sm font-semibold hover:bg-teal-dark transition-colors cursor-pointer"
+                disabled={stateBlocked}
+                className="flex-1 py-3 bg-teal text-white rounded-button text-sm font-semibold hover:bg-teal-dark transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Continue
               </button>
@@ -263,7 +325,9 @@ export default function QuickQuoteForm() {
             <h3 className="text-lg font-semibold text-navy mb-4">Loan details</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Purchase Price</label>
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Purchase Price
+                </label>
                 <Controller
                   control={control}
                   name="purchasePrice"
@@ -278,7 +342,9 @@ export default function QuickQuoteForm() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Loan Amount Needed</label>
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Loan Amount Needed
+                </label>
                 <Controller
                   control={control}
                   name="loanAmount"
@@ -315,10 +381,14 @@ export default function QuickQuoteForm() {
 
         {step === 4 && (
           <div>
-            <h3 className="text-lg font-semibold text-navy mb-4">How can we reach you?</h3>
+            <h3 className="text-lg font-semibold text-navy mb-4">
+              How can we reach you?
+            </h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Full Name</label>
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Full Name
+                </label>
                 <Controller
                   control={control}
                   name="name"
@@ -333,11 +403,15 @@ export default function QuickQuoteForm() {
                     />
                   )}
                 />
-                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+                {errors.name && (
+                  <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Phone
+                </label>
                 <Controller
                   control={control}
                   name="phone"
@@ -352,11 +426,15 @@ export default function QuickQuoteForm() {
                     />
                   )}
                 />
-                {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
+                {errors.phone && (
+                  <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-900 mb-1">
+                  Email
+                </label>
                 <Controller
                   control={control}
                   name="email"
@@ -371,7 +449,9 @@ export default function QuickQuoteForm() {
                     />
                   )}
                 />
-                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                )}
               </div>
 
               <div className="flex items-start gap-2">
@@ -380,16 +460,22 @@ export default function QuickQuoteForm() {
                   name="smsConsent"
                   render={({ field }) => (
                     <input
+                      id="quick-sms-consent"
                       type="checkbox"
                       checked={field.value === true}
-                      onChange={(e) => field.onChange(e.target.checked ? true : undefined)}
+                      onChange={(e) =>
+                        field.onChange(e.target.checked ? true : undefined)
+                      }
                       onBlur={field.onBlur}
-                      className="mt-1 accent-teal"
+                      className="mt-1 accent-teal h-4 w-4"
                     />
                   )}
                 />
-                <label className="text-xs text-gray-600">
-                  I consent to receive SMS messages about my loan inquiry. Message &amp; data rates may apply.
+                <label
+                  htmlFor="quick-sms-consent"
+                  className="text-xs text-gray-600 leading-relaxed"
+                >
+                  {SMS_CONSENT_COPY}
                 </label>
               </div>
               {errors.smsConsent && (
@@ -413,8 +499,20 @@ export default function QuickQuoteForm() {
                 {isSubmitting ? (
                   <span className="flex items-center justify-center gap-2">
                     <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
                     </svg>
                     Submitting...
                   </span>
@@ -426,6 +524,11 @@ export default function QuickQuoteForm() {
             <p className="text-xs text-gray-600 text-center mt-3">
               No credit check required. No obligation.
             </p>
+            {submitError && (
+              <p className="text-error text-sm text-center mt-3 bg-error/10 border border-error/20 rounded-input px-3 py-2">
+                {submitError}
+              </p>
+            )}
           </div>
         )}
       </FormStep>

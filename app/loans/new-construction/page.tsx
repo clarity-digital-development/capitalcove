@@ -1,15 +1,14 @@
 import type { Metadata } from 'next';
-import { LOAN_PROGRAMS_FULL } from '@/lib/constants';
-import { LoanProgramLayout } from '@/components/loans/LoanProgramLayout';
+import { PlaceholderProgramTemplate } from '@/components/loans/PlaceholderProgramTemplate';
+import { PHASE_2_PROGRAMS } from '@/lib/constants';
 
-const program = LOAN_PROGRAMS_FULL.find((p) => p.slug === 'new-construction')!;
+const program = PHASE_2_PROGRAMS.find((p) => p.slug === 'new-construction')!;
 
 export const metadata: Metadata = {
-  title: 'New Construction Loans | Ground-Up Financing | Capital Cove',
-  description:
-    'Finance ground-up residential construction with up to 85% of project costs. Fast draw processing, flexible terms, and close in 14–21 days.',
+  title: program.metaTitle,
+  description: program.metaDescription,
 };
 
 export default function NewConstructionPage() {
-  return <LoanProgramLayout program={program} />;
+  return <PlaceholderProgramTemplate program={program} />;
 }

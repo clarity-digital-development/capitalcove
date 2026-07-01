@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Instagram, Linkedin, Phone, Mail, MapPin } from 'lucide-react';
+import { Instagram, Facebook, Phone, Mail, MapPin } from 'lucide-react';
 import { SITE_CONFIG, LOAN_PROGRAMS, RESOURCES } from '@/lib/constants';
 
 export function Footer() {
@@ -13,17 +13,15 @@ export function Footer() {
             <Link href="/">
               <Image
                 src="/images/logo.svg"
-                alt="Capital Cove Real Estate Funding"
+                alt="The Capital Cove"
                 width={150}
                 height={42}
                 className="brightness-0 invert"
               />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-gray-200/70">
-              Fast, flexible private real estate financing for investors and
-              borrowers. Close with confidence.
+              Private lending built by an investor, for investors. Fast closings, transparent terms, and a real human on the other end of the phone.
             </p>
-            <p className="mt-4 text-xs text-gray-200/50">{SITE_CONFIG.nmls}</p>
           </div>
 
           {/* Loan Programs */}
@@ -61,6 +59,22 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/about"
+                  className="text-sm text-gray-200/70 transition-colors hover:text-white"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="text-sm text-gray-200/70 transition-colors hover:text-white"
+                >
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -81,7 +95,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href={`mailto:${SITE_CONFIG.email}`}
+                  href={SITE_CONFIG.emailHref}
                   className="flex items-center gap-2 text-sm text-gray-200/70 transition-colors hover:text-white"
                 >
                   <Mail className="h-4 w-4 shrink-0" />
@@ -91,7 +105,7 @@ export function Footer() {
               <li>
                 <div className="flex items-start gap-2 text-sm text-gray-200/70">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-                  {SITE_CONFIG.address}
+                  {SITE_CONFIG.locationLine}
                 </div>
               </li>
             </ul>
@@ -99,22 +113,22 @@ export function Footer() {
             {/* Social */}
             <div className="mt-6 flex gap-4">
               <a
-                href="https://instagram.com"
+                href={SITE_CONFIG.socialLinks.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram"
+                aria-label={`Instagram ${SITE_CONFIG.socialLinks.instagramHandle}`}
                 className="text-gray-200/50 transition-colors hover:text-white"
               >
                 <Instagram className="h-5 w-5" />
               </a>
               <a
-                href="https://linkedin.com"
+                href={SITE_CONFIG.socialLinks.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="LinkedIn"
+                aria-label="Facebook"
                 className="text-gray-200/50 transition-colors hover:text-white"
               >
-                <Linkedin className="h-5 w-5" />
+                <Facebook className="h-5 w-5" />
               </a>
             </div>
           </div>
@@ -123,20 +137,24 @@ export function Footer() {
 
       {/* Bottom Bar */}
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs text-gray-200/50 sm:flex-row sm:px-6 lg:px-8">
-          <p>
-            &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. All rights
-            reserved.
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          {/* Required compliance brand line — business-purpose lending disclosure */}
+          <p className="text-xs leading-relaxed text-gray-300">
+            The Capital Cove is a d/b/a of Guinn Consulting LLC. Business-purpose lending only. Not a consumer mortgage lender.
           </p>
-          <div className="flex items-center gap-6">
-            <Link href="/privacy" className="transition-colors hover:text-white">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="transition-colors hover:text-white">
-              Terms of Service
-            </Link>
+          <div className="mt-4 flex flex-col items-center justify-between gap-3 text-xs text-gray-200/50 sm:flex-row">
+            <p>
+              &copy; {new Date().getFullYear()} {SITE_CONFIG.legalString}. All rights reserved.
+            </p>
+            <div className="flex items-center gap-6">
+              <Link href="/privacy" className="transition-colors hover:text-white">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="transition-colors hover:text-white">
+                Terms of Service
+              </Link>
+            </div>
           </div>
-          <p>Equal Housing Lender</p>
         </div>
       </div>
     </footer>

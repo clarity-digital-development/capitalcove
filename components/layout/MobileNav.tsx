@@ -44,7 +44,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4">
               <Image
                 src="/images/logo.svg"
-                alt="Capital Cove"
+                alt="The Capital Cove"
                 width={140}
                 height={38}
               />

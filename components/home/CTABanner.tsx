@@ -9,7 +9,7 @@ interface CTABannerProps {
 
 export function CTABanner({
   headline = 'Ready to Fund Your Next Deal?',
-  subheadline = 'Submit your deal and get a term sheet within 24 hours.',
+  subheadline = 'Submit your deal and Dalton will reach out within minutes.',
   ctaText = 'Get Started',
   ctaHref = '/apply',
 }: CTABannerProps) {

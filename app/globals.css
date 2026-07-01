@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  /* Primary — from Capital Cove logo navy */
-  --color-navy: #1B3A5C;
-  --color-navy-light: #244D78;
-  --color-navy-dark: #112842;
+  /* Primary — The Capital Cove navy */
+  --color-navy: #1B2B4B;
+  --color-navy-light: #2A3F6B;
+  --color-navy-dark: #0F1A2E;
 
-  /* Secondary — from Capital Cove logo green */
-  --color-teal: #2BA97B;
-  --color-teal-light: #3CC08E;
-  --color-teal-dark: #1F8A63;
+  /* Secondary — deep teal */
+  --color-teal: #0A7B6E;
+  --color-teal-light: #0FA391;
+  --color-teal-dark: #065C53;
 
   /* Accent — warm gold CTA */
   --color-gold: #D4A853;

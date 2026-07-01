@@ -1,31 +1,10 @@
-import type { LoanProgramRates } from '@/lib/constants';
+import type { RateTermRow } from '@/lib/constants';
 
 interface RateTermsTableProps {
-  rates: LoanProgramRates;
-  eligiblePropertyTypes?: string[];
+  rows: readonly RateTermRow[];
 }
 
-const rateLabels: { key: Exclude<keyof LoanProgramRates, 'eligiblePropertyTypes'>; label: string }[] = [
-  { key: 'interestRate', label: 'Interest Rate Range' },
-  { key: 'originationPoints', label: 'Origination Points' },
-  { key: 'maxLTV', label: 'LTV (Purchase)' },
-  { key: 'maxLTVARV', label: 'LTV (ARV)' },
-  { key: 'loanRange', label: 'Loan Amounts' },
-  { key: 'termLength', label: 'Term Length' },
-  { key: 'closingTimeline', label: 'Closing Timeline' },
-];
-
-export function RateTermsTable({ rates, eligiblePropertyTypes }: RateTermsTableProps) {
-  const rows = [
-    ...rateLabels.map((row) => ({
-      label: row.label,
-      value: rates[row.key] || '—',
-    })),
-    ...(eligiblePropertyTypes?.length
-      ? [{ label: 'Eligible Property Types', value: eligiblePropertyTypes.join(', ') }]
-      : []),
-  ];
-
+export function RateTermsTable({ rows }: RateTermsTableProps) {
   return (
     <div className="rounded-card overflow-hidden border border-gray-100">
       <table className="w-full">
@@ -35,7 +14,7 @@ export function RateTermsTable({ rates, eligiblePropertyTypes }: RateTermsTableP
               key={row.label}
               className={idx % 2 === 0 ? 'bg-white' : 'bg-warm-gray'}
             >
-              <td className="px-6 py-4 font-medium text-gray-600 w-1/3">
+              <td className="px-6 py-4 font-medium text-gray-600 w-1/3 align-top">
                 {row.label}
               </td>
               <td className="px-6 py-4 font-semibold text-gray-900">

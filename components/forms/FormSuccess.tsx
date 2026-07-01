@@ -44,7 +44,7 @@ export default function FormSuccess({ type }: FormSuccessProps) {
         transition={{ delay: 0.5 }}
         className="text-2xl font-bold text-navy mb-3"
       >
-        Deal Submitted!
+        We&apos;ve got your deal.
       </motion.h2>
 
       <motion.p
@@ -53,7 +53,7 @@ export default function FormSuccess({ type }: FormSuccessProps) {
         transition={{ delay: 0.6 }}
         className="text-gray-600 mb-8 max-w-sm"
       >
-        We&apos;ve received your deal. Expect a text within minutes.
+        Dalton will reach out within minutes — check your phone.
       </motion.p>
 
       <motion.div
@@ -63,10 +63,10 @@ export default function FormSuccess({ type }: FormSuccessProps) {
       >
         {type === 'quick-quote' ? (
           <Link
-            href="/apply"
+            href="/apply?type=fix-and-flip"
             className="inline-block px-8 py-3 bg-gold text-navy font-semibold rounded-button hover:bg-gold-light transition-colors"
           >
-            Want to complete the full application?
+            Complete the Full Application
           </Link>
         ) : (
           <Link

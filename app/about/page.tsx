@@ -1,35 +1,21 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { Zap, Eye, Users } from 'lucide-react';
 import { CTABanner } from '@/components/home/CTABanner';
 import { SectionHeading } from '@/components/shared/SectionHeading';
-import { SITE_CONFIG } from '@/lib/constants';
+import { ABOUT_STATS, VALUES, SITE_CONFIG } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'About Capital Cove | Private Lender for Real Estate Investors',
+  title: 'About | The Capital Cove',
   description:
-    'Capital Cove was built by a real estate investor who understood the frustration of slow, rigid financing. Learn our story and why investors trust us.',
+    'Founded by an active investor with $6M+ in real estate transactions. Fast closings, transparent terms, investor-first lending.',
 };
 
-const values = [
-  {
-    icon: Zap,
-    title: 'Speed Over Red Tape',
-    description:
-      'We eliminated the bureaucracy that slows traditional lending. Our process is designed to get you from application to closing in days, not months.',
-  },
-  {
-    icon: Eye,
-    title: 'Transparent Terms',
-    description:
-      'No hidden fees, no last-minute surprises. Every cost is laid out in your term sheet upfront so you can underwrite your deal with confidence.',
-  },
-  {
-    icon: Users,
-    title: 'Investor-First Approach',
-    description:
-      'We evaluate deals the way you do — by the numbers. Your experience and the property matter more to us than a credit score.',
-  },
-];
+const valueIcons = {
+  'Speed Over Red Tape': Zap,
+  'Transparency First': Eye,
+  'Investor to Investor': Users,
+} as const;
 
 export default function AboutPage() {
   return (
@@ -38,53 +24,63 @@ export default function AboutPage() {
       <section className="bg-navy py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="font-display text-hero text-white">
-            Built by an Investor, for Investors
+            Built by an Investor Who Gets It
           </h1>
           <p className="text-body-lg text-white/80 mt-6 max-w-2xl mx-auto">
-            We started {SITE_CONFIG.name} because we lived the problem firsthand.
+            $6M+ in real estate transactions. Now helping investors fund their next deal.
           </p>
         </div>
       </section>
 
       {/* Founder Story */}
-      <section className="py-section bg-white">
+      <section className="py-(--spacing-section) bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Headshot placeholder */}
-            <div className="aspect-[3/4] max-w-md mx-auto lg:mx-0 bg-gray-200 rounded-card flex items-center justify-center">
-              <span className="text-gray-600 text-lg font-medium">Photo</span>
+            {/* Headshot */}
+            <div className="relative aspect-[3/4] max-w-md mx-auto lg:mx-0 rounded-card overflow-hidden bg-warm-gray shadow-card-hover">
+              <Image
+                src="/images/dalton-headshot.png"
+                alt="Dalton Guinn, founder of The Capital Cove"
+                fill
+                sizes="(max-width: 1024px) 100vw, 448px"
+                className="object-cover object-top"
+                priority
+              />
             </div>
 
-            {/* Narrative */}
+            {/* Narrative — first-person Dalton */}
             <div>
               <SectionHeading
-                badge="Our Story"
-                title="From Investor to Lender"
+                badge="MY STORY"
+                title="I’m Dalton. I’ve done the deals."
               />
-              <div className="mt-6 space-y-4 text-gray-600 leading-relaxed">
+              <blockquote className="mt-6 border-l-4 border-gold pl-5 italic text-lg text-navy-dark font-medium">
+                &ldquo;{SITE_CONFIG.tagline}&rdquo;
+              </blockquote>
+              <div className="mt-6 space-y-4 text-gray-700 leading-relaxed">
                 <p>
-                  Before founding {SITE_CONFIG.name}, our team spent years as
-                  active real estate investors — flipping houses, building rental
-                  portfolios, and navigating the frustrating world of traditional
-                  lending.
+                  I’m an active real estate investor first and a lender second. I own
+                  $2.5M in rental properties that generate $2K a month in positive
+                  cash flow, and I’ve completed $3.5M+ in flips — my largest single
+                  project netted $200K.
                 </p>
                 <p>
-                  We experienced firsthand what it feels like to lose a deal
-                  because a bank needed six more weeks of paperwork. We know the
-                  pain of hidden fees buried in fine print and underwriters who
-                  have never evaluated an investment property.
+                  Along the way, I kept running into the same problem: lenders who
+                  didn’t understand the deals they were funding. Slow communication,
+                  rigid underwriting, hidden fees, and a lot of wasted time. A lot
+                  of them just see it as a paycheck.
                 </p>
                 <p>
-                  That experience led us to build {SITE_CONFIG.name} — a lending
-                  company that operates the way we always wished our lenders
-                  would. Fast decisions, transparent terms, and a team that
-                  actually understands your deals.
+                  I started The Capital Cove to be the lender I wished I had when I
+                  was starting out. Fast decisions, transparent terms, and a real
+                  human on the phone — me. I don’t need the money. I want to help
+                  other investors win.
                 </p>
                 <p>
-                  Today, we&apos;ve funded hundreds of deals for investors across
-                  the country. Whether it&apos;s your first flip or your
-                  fiftieth, we bring the same speed and attention to every
-                  transaction.
+                  Today I fund fix &amp; flip deals across 47 states out of
+                  Jacksonville, Florida. Both of my first two funded deals were for
+                  first-time investors, and I’m proud of that. If your deal makes
+                  sense, I can fund it.
                 </p>
               </div>
             </div>
@@ -92,17 +88,35 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Stats Bar */}
+      <section className="bg-navy-dark py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {ABOUT_STATS.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="text-3xl md:text-4xl font-bold text-gold">
+                  {stat.value}
+                </p>
+                <p className="text-sm text-white/70 mt-1 leading-tight">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Values */}
-      <section className="py-section bg-warm-gray">
+      <section className="py-(--spacing-section) bg-warm-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            title="Our Values"
+            title="How We Work"
             subtitle="The principles that guide every deal we fund."
             centered
           />
           <div className="mt-12 grid md:grid-cols-3 gap-8">
-            {values.map((value) => {
-              const Icon = value.icon;
+            {VALUES.map((value) => {
+              const Icon = valueIcons[value.title as keyof typeof valueIcons] ?? Zap;
               return (
                 <div
                   key={value.title}
@@ -118,43 +132,6 @@ export default function AboutPage() {
                 </div>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* Trust & Credentials */}
-      <section className="py-section bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <SectionHeading
-            title="Trust & Credentials"
-            subtitle="Licensed, compliant, and committed to industry best practices."
-            centered
-          />
-          <div className="mt-10 flex flex-wrap justify-center gap-8">
-            <div className="bg-warm-gray rounded-card px-8 py-6 text-center">
-              <p className="text-sm text-gray-600 uppercase tracking-wide font-medium">
-                NMLS Registered
-              </p>
-              <p className="text-lg font-bold text-navy mt-1">
-                {SITE_CONFIG.nmls}
-              </p>
-            </div>
-            <div className="bg-warm-gray rounded-card px-8 py-6 text-center">
-              <p className="text-sm text-gray-600 uppercase tracking-wide font-medium">
-                State Licensed
-              </p>
-              <p className="text-lg font-bold text-navy mt-1">
-                California DRE
-              </p>
-            </div>
-            <div className="bg-warm-gray rounded-card px-8 py-6 text-center">
-              <p className="text-sm text-gray-600 uppercase tracking-wide font-medium">
-                Member
-              </p>
-              <p className="text-lg font-bold text-navy mt-1">
-                AAPL (American Association of Private Lenders)
-              </p>
-            </div>
           </div>
         </div>
       </section>

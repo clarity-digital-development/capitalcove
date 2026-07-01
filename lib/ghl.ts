@@ -80,9 +80,12 @@ export async function createContact(data: CreateContactInput) {
   }
 
   if (data.customFields?.length) {
+    // GHL v2 /contacts/upsert matches a custom field by `key` (the Field Key set
+    // up in GHL) and writes the value via `field_value`. Sending `{ id, value }`
+    // silently drops every field. See docs/ghl-custom-fields-setup.md.
     payload.customFields = data.customFields.map((cf) => ({
-      id: cf.key,
-      value: cf.value,
+      key: cf.key,
+      field_value: cf.value,
     }));
   }
 

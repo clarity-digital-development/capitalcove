@@ -1,40 +1,96 @@
+'use client';
+
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { CTAButton } from '@/components/shared/CTAButton';
 import { CheckCircle } from 'lucide-react';
+import { HERO_TRUST_PILLS } from '@/lib/constants';
 
-const trustMetrics = [
-  'Same-Day Term Sheets',
-  'Up to 90% LTV',
-  'Loans from $75K\u2013$2M+',
-];
-
+/**
+ * Hero fills 100vh minus the 64px (h-16) sticky navbar at the top, so it
+ * occupies the entire visible viewport on first paint.
+ *
+ * Desktop: founder photo is absolutely positioned, full-bleeding the right
+ * 50% of the viewport edge-to-edge, top to bottom. Slashed left edge acts
+ * as the visual divider. Text content is vertically centered in the left half.
+ * `object-top` anchors the photo so the head stays in frame.
+ *
+ * Mobile: image stacks above text. Section still fills the viewport (content
+ * can scroll naturally if it overflows).
+ */
 export function Hero() {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  const desktopClipPath = 'polygon(10% 0%, 100% 0%, 100% 100%, 0% 100%)';
+  const mobileClipPath = 'polygon(6% 0%, 100% 0%, 100% 100%, 0% 100%)';
+
   return (
-    <section className="bg-warm-gray">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <div className="flex flex-col-reverse lg:flex-row items-center gap-12">
-          {/* Content - 55% */}
-          <div className="w-full lg:w-[55%]">
+    <section className="relative bg-warm-gray overflow-hidden min-h-[calc(100vh-4rem)] flex">
+      {/* Desktop image — full bleed right 50%, edge-to-edge top + bottom */}
+      {isDesktop && (
+        <div
+          className="hidden lg:block absolute inset-y-0 right-0 w-1/2 z-0"
+          style={{ clipPath: desktopClipPath }}
+        >
+          <Image
+            src="/images/dalton-hero.jpg"
+            alt="Dalton Guinn, founder of The Capital Cove"
+            fill
+            sizes="50vw"
+            className="object-cover object-top"
+            priority
+          />
+        </div>
+      )}
+
+      <div className="relative max-w-7xl mx-auto w-full px-4 sm:px-6 lg:pl-0 lg:pr-8 py-12 lg:py-0 z-10 flex items-center">
+        <div className="flex flex-col-reverse lg:block w-full">
+          {/* Mobile image — stacks above text */}
+          <div className="lg:hidden mt-10">
+            <div
+              className="relative aspect-[4/5] w-full overflow-hidden shadow-card-hover"
+              style={{ clipPath: mobileClipPath }}
+            >
+              <Image
+                src="/images/dalton-hero.jpg"
+                alt="Dalton Guinn, founder of The Capital Cove"
+                fill
+                sizes="100vw"
+                className="object-cover object-top"
+                priority
+              />
+            </div>
+          </div>
+
+          {/* Text content — left half on desktop, vertically centered */}
+          <div className="w-full lg:w-[50%] lg:pr-8">
             <h1 className="font-display text-hero text-navy-dark">
-              Fast, Flexible Funding for Real Estate Investors
+              Close Your Next Deal in 5 Days
             </h1>
             <p className="text-body-lg text-gray-600 mt-6 max-w-xl">
-              Close your next deal in as few as 10 business days. Fix &amp; flip,
-              bridge, and rental loans built for investors who move fast.
+              Fix &amp; flip funding from 9%. 100% rehab financing. No income
+              verification. Built by an investor who&apos;s been in your shoes.
             </p>
 
             <div className="flex flex-wrap gap-4 mt-8">
-              <CTAButton href="/apply" variant="primary" size="lg">
+              <CTAButton href="#quick-quote" variant="primary" size="lg">
                 Get Your Rate
               </CTAButton>
-              <CTAButton href="/loans" variant="ghost" size="lg">
-                See Loan Programs
+              <CTAButton href="/how-it-works" variant="ghost" size="lg">
+                See How It Works
               </CTAButton>
             </div>
 
-            {/* Trust metric strip */}
             <div className="flex flex-wrap gap-x-6 gap-y-2 mt-8">
-              {trustMetrics.map((metric) => (
+              {HERO_TRUST_PILLS.map((metric) => (
                 <span
                   key={metric}
                   className="inline-flex items-center gap-2 text-sm text-gray-600"
@@ -43,20 +99,6 @@ export function Hero() {
                   {metric}
                 </span>
               ))}
-            </div>
-          </div>
-
-          {/* Hero image - 45% */}
-          <div className="w-full lg:w-[45%]">
-            <div className="rounded-card overflow-hidden shadow-card-hover">
-              <Image
-                src="/images/hero.jpg"
-                alt="Capital Cove - Real Estate Funding for Investors"
-                width={600}
-                height={800}
-                className="w-full h-auto object-cover"
-                priority
-              />
             </div>
           </div>
         </div>

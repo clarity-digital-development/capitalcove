@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { SITE_CONFIG, LOAN_PROGRAMS } from '@/lib/constants';
+import { getAllBlogSlugs } from '@/lib/blog';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SITE_CONFIG.url;
@@ -68,7 +69,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Loan program pages
   const loanRoutes: MetadataRoute.Sitemap = LOAN_PROGRAMS.map((program) => ({
     url: `${baseUrl}${program.href}`,
     lastModified: now,
@@ -76,9 +76,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  // Blog post pages
-  const blogSlugs = ['what-is-hard-money', 'fix-and-flip-101', 'brrrr-method-explained'];
-  const blogRoutes: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({
+  const blogRoutes: MetadataRoute.Sitemap = getAllBlogSlugs().map((slug) => ({
     url: `${baseUrl}/resources/${slug}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,

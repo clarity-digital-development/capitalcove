@@ -108,7 +108,7 @@ export function Navbar() {
           <Link href="/" className="flex items-center">
             <Image
               src="/images/logo.svg"
-              alt="Capital Cove Real Estate Funding"
+              alt="The Capital Cove"
               width={100}
               height={28}
               priority

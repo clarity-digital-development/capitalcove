@@ -3,41 +3,17 @@ import Link from 'next/link';
 import { Calculator } from 'lucide-react';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { CTABanner } from '@/components/home/CTABanner';
+import { getAllBlogPosts } from '@/lib/blog';
 
 export const metadata: Metadata = {
-  title: 'Resources',
+  title: 'Resources | The Capital Cove',
   description:
     'Tools, guides, and insights for real estate investors. Use our flip profit calculator and read our latest articles on private lending strategies.',
 };
 
-const blogPosts = [
-  {
-    slug: 'what-is-hard-money',
-    title: 'What Is a Hard Money Loan? The Complete Guide for Investors',
-    excerpt:
-      'Everything you need to know about hard money lending: how it works, when to use it, and how to choose the right lender for your deal.',
-    category: 'Education',
-    readTime: '8 min read',
-  },
-  {
-    slug: 'fix-and-flip-101',
-    title: 'Fix and Flip 101: A Step-by-Step Guide to Your First Flip',
-    excerpt:
-      'From finding deals to managing rehab budgets, here is a practical roadmap for completing your first profitable fix and flip project.',
-    category: 'Strategy',
-    readTime: '10 min read',
-  },
-  {
-    slug: 'brrrr-method-explained',
-    title: 'The BRRRR Method Explained: Build Wealth Through Rental Properties',
-    excerpt:
-      'Buy, Rehab, Rent, Refinance, Repeat. Learn how the BRRRR strategy works and how to finance each step of the process.',
-    category: 'Strategy',
-    readTime: '7 min read',
-  },
-];
-
 export default function ResourcesPage() {
+  const blogPosts = getAllBlogPosts();
+
   return (
     <>
       {/* Hero */}
@@ -51,7 +27,7 @@ export default function ResourcesPage() {
       </section>
 
       {/* Featured Calculator */}
-      <section className="py-section bg-white">
+      <section className="py-(--spacing-section) bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/resources/calculator"
@@ -83,7 +59,7 @@ export default function ResourcesPage() {
       </section>
 
       {/* Blog Grid */}
-      <section className="py-section bg-warm-gray">
+      <section className="py-(--spacing-section) bg-warm-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             title="Guides & Articles"
