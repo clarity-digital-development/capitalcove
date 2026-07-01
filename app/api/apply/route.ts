@@ -80,7 +80,8 @@ export async function POST(request: Request) {
       { key: 'deal_exit_strategy', value: data.exitStrategy },
       { key: 'deals_completed', value: data.dealsCompleted },
       { key: 'entity_type', value: data.entityType },
-      { key: 'entity_name', value: data.entityName },
+      // Writes into Dalton's existing GHL "LLC Name" field (key: llc_name)
+      { key: 'llc_name', value: data.entityName },
       { key: 'entity_state', value: data.entityState },
       { key: 'preferred_contact', value: data.preferredContact },
       // TCPA/SMS consent — required to submit (literal true), stored with a timestamp

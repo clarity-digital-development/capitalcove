@@ -53,7 +53,7 @@ For every field below, click **+ Add Custom Field** and fill in:
 | 12 | Desired Timeline | `desired_timeline` | Dropdown | `asap`, `30-days`, `60-days`, `exploring` |
 | 13 | Deals Completed (Last 24 Mo) | `deals_completed` | Dropdown | `0`, `1-4`, `5-10`, `10-20`, `20+` |
 | 14 | Entity Type | `entity_type` | Dropdown | `LLC`, `Corporation`, `Trust`, `Other` |
-| 15 | Entity Name | `entity_name` | Single Line | — |
+| 15 | Entity Name | `llc_name` | Single Line | Writes into your existing "LLC Name" field — no new field needed |
 | 16 | Entity State | `entity_state` | Dropdown | Same 50 US state codes as #4 |
 | 17 | Preferred Contact | `preferred_contact` | Dropdown | `phone`, `email`, `text` |
 | 18 | Lead Source Detail | `lead_source_detail` | Dropdown | `Instagram`, `Referral`, `Google Search`, `Facebook`, `Other` |
