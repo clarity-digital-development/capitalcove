@@ -29,7 +29,7 @@ export function Hero() {
   const desktopClipPath = 'polygon(10% 0%, 100% 0%, 100% 100%, 0% 100%)';
 
   return (
-    <section className="relative bg-warm-gray overflow-hidden lg:min-h-[calc(100vh-4rem)] flex">
+    <section className="relative bg-warm-gray overflow-hidden min-h-[calc(100dvh-4rem)] lg:min-h-[calc(100vh-4rem)] flex">
       {/* Desktop image — full bleed right 50%, edge-to-edge top + bottom */}
       {isDesktop && (
         <div
